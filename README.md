@@ -27,20 +27,73 @@ This tool closes those by construction, and reports honestly on what remains ope
 
 ---
 
-## Quick start
+## Running it as a teacher
 
-```bash
-git clone https://github.com/TALELMN/QSMU_SEB.git
-cd QSMU_SEB
-python -m pip install -r requirements.txt
-python -m sebkit ui
-```
+No command line needed. Setup happens once per computer; after that each exam takes about two
+minutes.
 
-The interface opens at `http://127.0.0.1:8733`. Everything runs locally — nothing is uploaded
-anywhere.
+### Setup (once)
 
-On Windows, teachers can instead double-click **`Start-SEB-Exam-Kit.bat`**, which checks for
-Python, installs the one dependency if needed, and launches the interface.
+1. Install Python from [python.org](https://www.python.org/downloads/) — **tick "Add python.exe
+   to PATH"** on the first screen of the installer.
+2. Download this repository: the green **Code** button above → **Download ZIP** → extract it
+   somewhere you can find again.
+3. Double-click **`Start-SEB-Exam-Kit.bat`**. It checks for Python, installs the one component it
+   needs, and opens the interface in your browser at `http://127.0.0.1:8733`.
+
+Everything runs on your own machine. Nothing is uploaded anywhere. If the window closes instantly,
+Python is not on PATH — reinstall it with that box ticked.
+
+### For each exam
+
+1. **Exam name** — e.g. `Anatomy S1 2026 — Session 1`
+2. **Moodle quiz address** — copy it from your browser while looking at the quiz
+3. Leave everything else on its default unless the paper needs file uploads or audio
+4. Click **Generate exam configuration**
+
+You get three things: two passwords **shown once on screen**, a `.seb` file to download, and a
+printable exam pack.
+
+> [!WARNING]
+> **Save both passwords before leaving the page.** They are generated for that exam only and are
+> stored nowhere. If you lose them, generate a new configuration — they cannot be recovered.
+>
+> The **quit password** goes to invigilators. The **settings password** stays with you: it is what
+> stops a student opening the configuration file and reading the entire exam policy. Never read it
+> aloud in the room.
+
+### Set up the quiz in Moodle
+
+1. Quiz → **Settings** → **Safe Exam Browser** section
+2. Set **Require the use of Safe Exam Browser** to **Yes — Upload my own config**
+3. Upload the generated `.seb` file and save
+4. Leave the **Browser Exam Key** field empty unless you are deliberately pinning one exact SEB build
+5. Let Moodle compute the Config Key itself — **do not paste one in**
+
+> [!IMPORTANT]
+> Moodle re-serialises an uploaded `.seb` before serving it to students, so a Config Key computed
+> from your local copy will **not** match the file students receive. Pasting a locally computed key
+> is the single most common reason an exam refuses every student on the day.
+
+Avoid **Yes — Use SEB client config**: it performs no server-side verification of your settings,
+removing the one control that still works on hardware you do not own.
+
+### Test it before announcing the exam
+
+Two checks, both required:
+
+- Open the quiz in an **ordinary browser** → it must be **refused**
+- Open it through **SEB using your configuration** → it must **load**
+
+A configuration that has not passed both halves has not been tested.
+
+### On the day
+
+- Distribute the `.seb` file however you normally share materials — Moodle, email, or USB.
+  Students double-click it and SEB launches straight into the exam.
+- Give invigilators the **quit password only**.
+- Print the last page of the exam pack. It is a room checklist: phone collection, second-monitor
+  and earbud checks, and what to do when SEB fails on a student's machine.
 
 ---
 
@@ -67,11 +120,14 @@ allowlists, and grades the result.
 
 ---
 
-## Usage
+## Usage (from source)
 
-### Interface
+For administrators and anyone working on the tool. Teachers should use the walkthrough above.
 
 ```bash
+git clone https://github.com/TALELMN/QSMU_SEB.git
+cd QSMU_SEB
+python -m pip install -r requirements.txt
 python -m sebkit ui                 # http://127.0.0.1:8733
 ```
 
@@ -101,26 +157,6 @@ python -m sebkit key exam.seb --json    # the exact string being hashed
 | `byod_strict` | Student laptops, maximum enforcement. **Default.** |
 | `byod_balanced` | Student laptops, first deployment. Relaxes the three settings most likely to cause exam-day support calls — and the report names them. |
 | `lab_managed` | Institution-managed lab machines. |
-
----
-
-## Setting up the quiz in Moodle
-
-1. Quiz → **Settings** → **Safe Exam Browser** section.
-2. Set **Require the use of Safe Exam Browser** to **Yes — Upload my own config**.
-3. Upload the generated `.seb` file and save.
-4. Leave the Browser Exam Key field empty unless deliberately pinning one exact SEB build.
-5. Verify both halves before announcing the exam: an ordinary browser must be **refused**, and
-   SEB with this configuration must **load** the quiz.
-
-> [!IMPORTANT]
-> Moodle re-serialises an uploaded `.seb` before serving it to students, so a Config Key computed
-> from your local copy will **not** match the file students receive. In the upload flow, let
-> Moodle compute the key itself — do not paste one in. Pasting a locally computed key is the
-> single most common reason an exam refuses every student on the day.
-
-Avoid **Yes — Use SEB client config**: it performs no server-side verification of your settings,
-removing the one control that still works on hardware you do not own.
 
 ---
 
