@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MedTech SEB Exam Kit</title>
+<style>
+:root {
+  --ink:#171a1f; --muted:#606a77; --faint:#8a94a1; --line:#e3e7ec; --bg:#f4f6f8;
+  --panel:#ffffff; --accent:#1c4f8b; --accent-soft:#eaf1f9;
+  --critical:#a61b1b; --high:#b4530a; --medium:#8a6d1a; --low:#4a6a7a; --info:#4b5563; --ok:#1c6b3f;
+  --radius:9px;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink:#e8ecf1; --muted:#9aa5b3; --faint:#78828f; --line:#2a3038; --bg:#14171b;
+    --panel:#1b1f25; --accent:#7fb3ea; --accent-soft:#1e2a38;
+    --critical:#f08a8a; --high:#e5a86a; --medium:#d8bf76; --low:#9fc0cf; --info:#aab3c0; --ok:#7fc79c;
+  }
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--ink);
+  font:15px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.wrap { max-width:840px; margin:0 auto; padding:34px 22px 90px; }
+header h1 { font-size:24px; margin:0 0 4px; letter-spacing:-0.01em; }
+header p { margin:0 0 24px; color:var(--muted); font-size:14px; }
+.tabs { display:flex; gap:5px; border-bottom:1px solid var(--line); margin-bottom:24px; }
+.tab {
+  appearance:none; background:none; border:none; border-bottom:2px solid transparent;
+  padding:9px 15px; font:inherit; font-weight:550; color:var(--muted); cursor:pointer;
+}
+.tab[aria-selected="true"] { color:var(--accent); border-bottom-color:var(--accent); }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:22px; margin-bottom:18px; }
+.card h2 { font-size:16px; margin:0 0 3px; }
+.card .hint { color:var(--muted); font-size:13.5px; margin:0 0 18px; }
+label { display:block; font-size:13.5px; font-weight:550; margin-bottom:5px; }
+.sub { font-weight:400; color:var(--faint); }
+input[type=text], input[type=url], input[type=password], select, textarea {
+  width:100%; padding:9px 11px; font:inherit; font-size:14px; color:var(--ink);
+  background:var(--bg); border:1px solid var(--line); border-radius:6px;
+}
+input:focus, select:focus, textarea:focus { outline:2px solid var(--accent); outline-offset:-1px; }
+textarea { min-height:70px; resize:vertical; font-family:Consolas, monospace; font-size:13px; }
+.field { margin-bottom:17px; }
+.row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.checks { display:grid; gap:9px; }
+.check { display:flex; gap:9px; align-items:flex-start; padding:10px 12px; border:1px solid var(--line); border-radius:7px; cursor:pointer; }
+.check input { margin-top:3px; flex:none; }
+.check .t { font-size:13.5px; font-weight:550; }
+.check .d { font-size:12.5px; color:var(--muted); }
+button.primary {
+  appearance:none; border:none; background:var(--accent); color:#fff; font:inherit; font-weight:600;
+  padding:11px 20px; border-radius:7px; cursor:pointer;
+}
+button.primary:disabled { opacity:.55; cursor:progress; }
+button.ghost {
+  appearance:none; background:none; border:1px solid var(--line); color:var(--ink);
+  font:inherit; font-size:13px; padding:6px 11px; border-radius:6px; cursor:pointer;
+}
+.secret { display:flex; gap:9px; align-items:center; margin-bottom:12px; }
+.secret code {
+  flex:1; background:var(--bg); border:1px solid var(--line); border-radius:6px;
+  padding:10px 12px; font-family:Consolas, monospace; font-size:15px; letter-spacing:.03em; word-break:break-all;
+}
+.keyline { background:var(--bg); border:1px solid var(--line); border-radius:6px; padding:9px 11px;
+  font-family:Consolas, monospace; font-size:11.5px; word-break:break-all; color:var(--accent); }
+.note { border-left:3px solid var(--high); background:var(--accent-soft); padding:12px 14px; border-radius:0 6px 6px 0; font-size:13.5px; margin:14px 0; }
+.note.danger { border-left-color:var(--critical); }
+.note.ok { border-left-color:var(--ok); }
+.finding { border:1px solid var(--line); border-left-width:3px; border-radius:6px; padding:12px 14px; margin-bottom:9px; }
+.finding.critical { border-left-color:var(--critical); }
+.finding.high { border-left-color:var(--high); }
+.finding.medium { border-left-color:var(--medium); }
+.finding.low { border-left-color:var(--low); }
+.finding.info { border-left-color:var(--info); }
+.finding .h { display:flex; gap:9px; align-items:baseline; margin-bottom:4px; }
+.badge { font-size:10px; text-transform:uppercase; letter-spacing:.06em; font-weight:700;
+  padding:2px 6px; border-radius:3px; color:#fff; white-space:nowrap; }
+.badge.critical{background:var(--critical)} .badge.high{background:var(--high)}
+.badge.medium{background:var(--medium)} .badge.low{background:var(--low)} .badge.info{background:var(--info)}
+.finding .t { font-weight:600; font-size:14px; }
+.finding .d { font-size:13.5px; }
+.finding .f { font-size:13px; color:var(--muted); margin-top:5px; }
+.grade { font-size:20px; font-weight:650; margin-bottom:2px; }
+.actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+.actions a { text-decoration:none; }
+ol.steps { padding-left:20px; margin:0; }
+ol.steps li { margin-bottom:11px; font-size:13.5px; }
+ol.steps b { display:block; }
+.hidden { display:none !important; }
+.spinner { display:inline-block; width:13px; height:13px; border:2px solid rgba(255,255,255,.4);
+  border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; vertical-align:-2px; margin-right:7px; }
+@keyframes spin { to { transform:rotate(360deg); } }
+footer { margin-top:36px; color:var(--faint); font-size:12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>MedTech SEB Exam Kit</h1>
+  <p>Build a hardened Safe Exam Browser configuration for a Moodle quiz, or check one you already have.</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab" id="tab-create" role="tab" aria-selected="true" aria-controls="panel-create">Create an exam</button>
+  <button class="tab" id="tab-audit" role="tab" aria-selected="false" aria-controls="panel-audit">Check a configuration</button>
+</div>
+
+<!-- ============================ CREATE ============================ -->
+<section id="panel-create" role="tabpanel" aria-labelledby="tab-create">
+  <form id="create-form">
+    <div class="card">
+      <h2>The exam</h2>
+      <p class="hint">Everything else is chosen for you and can be reviewed below.</p>
+
+      <div class="field">
+        <label for="exam_name">Exam name</label>
+        <input type="text" id="exam_name" name="exam_name" required placeholder="Anatomy S1 2026 - Session 1">
+      </div>
+
+      <div class="field">
+        <label for="quiz_url">Moodle quiz address</label>
+        <input type="url" id="quiz_url" name="quiz_url" required
+               placeholder="https://moodle.medtech.tn/mod/quiz/view.php?id=42">
+      </div>
+
+      <div class="field">
+        <label for="quit_url">Where students land after quitting <span class="sub">- optional</span></label>
+        <input type="url" id="quit_url" name="quit_url" placeholder="https://moodle.medtech.tn/course/view.php?id=7">
+      </div>
+
+      <div class="field">
+        <label for="profile">Enforcement profile</label>
+        <select id="profile" name="profile"></select>
+        <p class="hint" id="profile-summary" style="margin:7px 0 0"></p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>What the exam needs</h2>
+      <p class="hint">Leave these off unless the paper genuinely requires them. Each one is a way material moves in or out of the session.</p>
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="allow_uploads">
+          <span><span class="t">Students upload a file</span><span class="d">For papers that require submitting a document or image.</span></span></label>
+        <label class="check"><input type="checkbox" id="allow_downloads">
+          <span><span class="t">Students download a file</span><span class="d">For papers that provide a dataset or worksheet.</span></span></label>
+        <label class="check"><input type="checkbox" id="allow_audio">
+          <span><span class="t">Audio playback and microphone</span><span class="d">For listening papers, or a camera-based proctoring add-on.</span></span></label>
+        <label class="check"><input type="checkbox" id="allow_spell_check">
+          <span><span class="t">Spell check</span><span class="d">Can reach an online service. Never enable for a language exam.</span></span></label>
+      </div>
+
+      <div class="field" style="margin-top:17px">
+        <label for="extra_allowed">Additional allowed addresses <span class="sub">- one per line, optional</span></label>
+        <textarea id="extra_allowed" placeholder="cdn.medtech.tn/*"></textarea>
+        <p class="hint" style="margin:6px 0 0">Only add a host if the quiz visibly fails without it. Every entry widens what students can reach.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Applications to block</h2>
+      <p class="hint">SEB refuses to start, or ends the session, when it sees one of these running.</p>
+      <div class="checks" id="categories"></div>
+    </div>
+
+    <button type="submit" class="primary" id="create-btn">Generate exam configuration</button>
+  </form>
+
+  <div id="create-result" class="hidden"></div>
+</section>
+
+<!-- ============================ AUDIT ============================ -->
+<section id="panel-audit" role="tabpanel" aria-labelledby="tab-audit" class="hidden">
+  <form id="audit-form">
+    <div class="card">
+      <h2>Check an existing configuration</h2>
+      <p class="hint">Reports what the file actually enforces. Nothing is uploaded anywhere - the check runs on this machine.</p>
+
+      <div class="field">
+        <label for="seb_file">Configuration file (.seb)</label>
+        <input type="file" id="seb_file" accept=".seb,.xml,.plist" required>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="audit_password">Settings password <span class="sub">- if encrypted</span></label>
+          <input type="password" id="audit_password" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="audit_context">Exam machines</label>
+          <select id="audit_context">
+            <option value="byod">Student laptops</option>
+            <option value="lab">Managed lab machines</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="primary" id="audit-btn">Check this configuration</button>
+  </form>
+
+  <div id="audit-result" class="hidden"></div>
+</section>
+
+<footer>Runs entirely on this machine. Generated files are written to the <code>out</code> folder beside the program.</footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------------- tabs ---------------- */
+function selectTab(name) {
+  for (const t of ['create', 'audit']) {
+    $('tab-' + t).setAttribute('aria-selected', String(t === name));
+    $('panel-' + t).classList.toggle('hidden', t !== name);
+  }
+}
+$('tab-create').onclick = () => selectTab('create');
+$('tab-audit').onclick = () => selectTab('audit');
+
+/* ---------------- options ---------------- */
+let PROFILES = [];
+fetch('/api/options').then(r => r.json()).then(opts => {
+  PROFILES = opts.profiles;
+  $('profile').innerHTML = opts.profiles.map(p =>
+    `<option value="${esc(p.key)}">${esc(p.key.replace(/_/g, ' '))}</option>`).join('');
+  updateProfileSummary();
+
+  $('categories').innerHTML = opts.categories.map(c => `
+    <label class="check">
+      <input type="checkbox" class="cat" value="${esc(c.key)}" ${c.essential ? 'checked' : ''}>
+      <span><span class="t">${esc(c.label)} <span class="sub">- ${c.count} tools</span></span>
+      <span class="d">${esc(c.rationale)}</span></span>
+    </label>`).join('');
+});
+
+function updateProfileSummary() {
+  const found = PROFILES.find(p => p.key === $('profile').value);
+  $('profile-summary').textContent = found ? found.summary : '';
+}
+$('profile').onchange = updateProfileSummary;
+
+/* ---------------- copy ---------------- */
+function copyBtn(value) {
+  return `<button type="button" class="ghost" onclick="copyText(this, ${JSON.stringify(value).replace(/"/g, '&quot;')})">Copy</button>`;
+}
+window.copyText = async (btn, text) => {
+  try { await navigator.clipboard.writeText(text); btn.textContent = 'Copied'; }
+  catch { btn.textContent = 'Press Ctrl+C'; }
+  setTimeout(() => { btn.textContent = 'Copy'; }, 1600);
+};
+
+/* ---------------- create ---------------- */
+$('create-form').onsubmit = async (event) => {
+  event.preventDefault();
+  const btn = $('create-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Generating';
+
+  const body = {
+    exam_name: $('exam_name').value,
+    quiz_url: $('quiz_url').value,
+    quit_url: $('quit_url').value,
+    profile: $('profile').value,
+    allow_uploads: $('allow_uploads').checked,
+    allow_downloads: $('allow_downloads').checked,
+    allow_audio: $('allow_audio').checked,
+    allow_spell_check: $('allow_spell_check').checked,
+    extra_allowed: $('extra_allowed').value,
+    categories: [...document.querySelectorAll('.cat:checked')].map(c => c.value),
+  };
+
+  try {
+    const response = await fetch('/api/create', {
+      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body),
+    });
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+    renderCreated(data);
+  } catch (err) {
+    $('create-result').classList.remove('hidden');
+    $('create-result').innerHTML =
+      `<div class="card"><div class="note danger"><b>Could not generate.</b><br>${esc(err.message)}</div></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Generate exam configuration';
+  }
+};
+
+function renderCreated(d) {
+  const steps = d.steps.map(s =>
+    `<li><b>${esc(s.title)}</b>${esc(s.body).replace(/\n\n/g, '<br><br>')}</li>`).join('');
+
+  $('create-result').classList.remove('hidden');
+  $('create-result').innerHTML = `
+    <div class="card">
+      <h2>${esc(d.exam_name)}</h2>
+      <p class="hint">${d.blocked_count} applications blocked &middot; self-check: ${esc(d.grade)}</p>
+
+      <div class="note danger">
+        <b>Save these passwords now.</b> They are generated for this exam only and are not stored
+        anywhere. If you lose them, generate a new configuration - they cannot be recovered.
+      </div>
+
+      <label>Quit password <span class="sub">- give this to invigilators</span></label>
+      <div class="secret"><code>${esc(d.quit_password)}</code>${copyBtn(d.quit_password)}</div>
+
+      <label>Settings password <span class="sub">- keep this to yourself</span></label>
+      <div class="secret"><code>${esc(d.admin_password)}</code>${copyBtn(d.admin_password)}</div>
+
+      <label style="margin-top:16px">Config Key</label>
+      <div class="keyline">${esc(d.config_key)}</div>
+
+      <div class="actions">
+        <a href="/download/${encodeURIComponent(d.seb_file)}"><button type="button" class="primary">Download ${esc(d.seb_file)}</button></a>
+        <a href="/report/${encodeURIComponent(d.report_file)}" target="_blank"><button type="button" class="ghost">Open the exam pack</button></a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Next: set up the quiz in Moodle</h2>
+      <p class="hint">The exam pack contains these steps plus an invigilator sheet you can print.</p>
+      <ol class="steps">${steps}</ol>
+    </div>`;
+  $('create-result').scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+
+/* ---------------- audit ---------------- */
+$('audit-form').onsubmit = async (event) => {
+  event.preventDefault();
+  const file = $('seb_file').files[0];
+  if (!file) return;
+
+  const btn = $('audit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Checking';
+
+  try {
+    const b64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = () => reject(new Error('could not read that file'));
+      reader.readAsDataURL(file);
+    });
+
+    const response = await fetch('/api/audit', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        file_b64: b64, filename: file.name,
+        password: $('audit_password').value,
+        lab: $('audit_context').value === 'lab',
+      }),
+    });
+    renderAudit(await response.json());
+  } catch (err) {
+    $('audit-result').classList.remove('hidden');
+    $('audit-result').innerHTML =
+      `<div class="card"><div class="note danger">${esc(err.message)}</div></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Check this configuration';
+  }
+};
+
+function renderAudit(d) {
+  const box = $('audit-result');
+  box.classList.remove('hidden');
+
+  if (d.needs_password) {
+    box.innerHTML = `<div class="card"><div class="note"><b>This configuration is password-protected.</b><br>
+      ${esc(d.error)} Enter the settings password above and check again.</div></div>`;
+    return;
+  }
+  if (d.error) {
+    box.innerHTML = `<div class="card"><div class="note danger">${esc(d.error)}</div></div>`;
+    return;
+  }
+
+  const counts = ['critical', 'high', 'medium', 'low']
+    .filter(s => d.counts[s]).map(s => `${d.counts[s]} ${s}`).join(' &middot; ') || 'no issues found';
+  const tone = /Not fit|Weak/.test(d.grade) ? 'danger' : (d.grade === 'Good' ? 'ok' : '');
+
+  const findings = d.findings.map(f => `
+    <div class="finding ${esc(f.severity)}">
+      <div class="h"><span class="badge ${esc(f.severity)}">${esc(f.severity)}</span>
+      <span class="t">${esc(f.title)}</span></div>
+      <div class="d">${esc(f.detail)}</div>
+      <div class="f"><b>Fix:</b> ${esc(f.remediation)}${f.key ? ' <code>' + esc(f.key) + '</code>' : ''}</div>
+    </div>`).join('') ||
+    '<div class="note ok">Nothing to report. Every check passed.</div>';
+
+  box.innerHTML = `
+    <div class="card">
+      <div class="grade">${esc(d.grade)}</div>
+      <p class="hint">${esc(d.verdict)}</p>
+      <div class="note ${tone}">${counts} &middot; ${esc(d.encoding)}</div>
+      ${findings}
+      <label style="margin-top:16px">Config Key</label>
+      <div class="keyline">${esc(d.config_key)}</div>
+      <div class="actions">
+        <a href="/report/${encodeURIComponent(d.report_file)}" target="_blank"><button type="button" class="ghost">Open the full report</button></a>
+      </div>
+    </div>`;
+  box.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+</script>
+</body>
+</html>

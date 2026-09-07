@@ -1,0 +1,21 @@
+# Generated exam configurations and reports.
+#
+# Never commit this folder: exam packs contain the admin and quit passwords in
+# plain text, and the .seb files carry their hashes. They are per-exam secrets,
+# not build output.
+out/
+*.seb
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

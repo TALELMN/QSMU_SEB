@@ -1,0 +1,5 @@
+# Runtime
+cryptography>=42.0
+
+# Development only (tests)
+# pip install pytest
